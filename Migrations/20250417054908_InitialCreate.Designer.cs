@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedicalAppointmentApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250416202155_InitialCreate")]
+    [Migration("20250417054908_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -103,7 +103,7 @@ namespace MedicalAppointmentApi.Migrations
                 {
                     b.HasBaseType("MedicalAppointmentApi.Models.Entities.User");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.ToTable("Patients", (string)null);
@@ -114,7 +114,6 @@ namespace MedicalAppointmentApi.Migrations
                     b.HasBaseType("MedicalAppointmentApi.Models.Entities.User");
 
                     b.Property<string>("Specialization")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.ToTable("Doctors", (string)null);

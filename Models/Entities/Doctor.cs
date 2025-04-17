@@ -9,7 +9,7 @@ namespace MedicalAppointmentApi.Models.Entities
     [Table("Doctors")]
     public class Doctor : User
     {
-        public required string Specialization { get; set; }
+        public string? Specialization { get; set; }
 
         // A doctor can have multiple appointments
         public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();

@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace MedicalAppointmentApi.Models.Data
 {
@@ -12,6 +9,7 @@ namespace MedicalAppointmentApi.Models.Data
         Task AddAsync(T entity);
         void Update(T entity);
         void Delete(T entity);
+        Task<T?> FindAsync(Func<T, bool> predicate);
     }
 
 }

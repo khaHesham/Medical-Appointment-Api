@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+
 using MedicalAppointment.API.Models;
 
 namespace MedicalAppointmentApi.Models.Entities
 {
     public class Appointment
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public DateTime AppointmentDate { get; set; }
         public required string Reason { get; set; }
@@ -23,7 +22,7 @@ namespace MedicalAppointmentApi.Models.Entities
         [ForeignKey("Doctor")]
         public int DoctorId { get; set; }
         [ForeignKey("Patient")]
-        public int? PatientId { get; set; } 
+        public int? PatientId { get; set; }
     }
 
     public enum AppointmentStatus

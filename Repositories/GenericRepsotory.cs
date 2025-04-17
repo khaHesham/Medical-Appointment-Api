@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace MedicalAppointmentApi.Models.Data
@@ -22,6 +19,8 @@ namespace MedicalAppointmentApi.Models.Data
         public async Task AddAsync(T entity) => await _dbSet.AddAsync(entity);
         public void Update(T entity) => _dbSet.Update(entity);
         public void Delete(T entity) => _dbSet.Remove(entity);
+        public async Task<T?> FindAsync(Func<T, bool> predicate) => await Task.Run(() => _dbSet.AsQueryable().FirstOrDefault(predicate));
+        
     }
 
 }

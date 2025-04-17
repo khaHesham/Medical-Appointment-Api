@@ -100,7 +100,7 @@ namespace MedicalAppointmentApi.Migrations
                 {
                     b.HasBaseType("MedicalAppointmentApi.Models.Entities.User");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.ToTable("Patients", (string)null);
@@ -111,7 +111,6 @@ namespace MedicalAppointmentApi.Migrations
                     b.HasBaseType("MedicalAppointmentApi.Models.Entities.User");
 
                     b.Property<string>("Specialization")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.ToTable("Doctors", (string)null);
