@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MedicalAppointmentApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("appointments")]
     [ApiController]
     public class AppointmentController : ControllerBase
     {
@@ -22,6 +22,15 @@ namespace MedicalAppointmentApi.Controllers
             var userId = User.GetUserId();
             var role = User.GetUserRole(); // helper extension
             var result = await _appointmentService.CancelAsync(id, userId, role);
+            return result ? NoContent() : BadRequest();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAppointmentById(int id)
+        {
+            var userId = User.GetUserId();
+            var role = User.GetUserRole(); 
+            var result = await _appointmentService.GetAppointmentByIdAsync(id, userId, role);
             return Ok(result);
         }
     }

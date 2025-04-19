@@ -3,6 +3,7 @@ using MedicalAppointmentApi.DTOs;
 using MedicalAppointmentApi.Exceptions;
 using MedicalAppointmentApi.Interfaces;
 using MedicalAppointmentApi.Models.Data;
+using MedicalAppointmentApi.Models.Entities;
 
 namespace MedicalAppointmentApi.Services
 {

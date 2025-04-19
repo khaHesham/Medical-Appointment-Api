@@ -11,5 +11,6 @@ namespace MedicalAppointmentApi.Interfaces
     {
         Task<DoctorDTO> GetDoctorByIdAsync(int id);
         Task<DoctorDTO> UpdateDoctorAsync(int doctorId, UpdateDoctorRequest updateDoctorRequest);
+        Task<IEnumerable<DoctorDTO>> GetAllDoctorsAsync();
     }
 }

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MedicalAppointmentApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("doctors")]
     [ApiController]
     public class DoctorController : ControllerBase
     {
@@ -44,7 +44,7 @@ namespace MedicalAppointmentApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet("appointments")]
+        [HttpGet("appointments/all")]
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> GetMyAppointments([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
@@ -53,6 +53,12 @@ namespace MedicalAppointmentApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllDoctors()
+        {
+            var result = await _doctorService.GetAllDoctorsAsync();
+            return Ok(result);
+        }
 
     }
 

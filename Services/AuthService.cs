@@ -115,7 +115,7 @@ namespace MedicalAppointmentApi.Services
             return Task.FromResult<LoginResponse?>(new LoginResponse
             {
                 Token = tokenHandler.WriteToken(token),
-                Role = user.UserRole.ToString(),
+                Role = user.UserRole.ToString().ToLower(),
             });
         }
     }

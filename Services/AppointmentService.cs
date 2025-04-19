@@ -46,7 +46,14 @@ namespace MedicalAppointmentApi.Services
         public async Task<IEnumerable<AppointmentDTO>> GetDoctorAppointmentsAsync(int doctorId, int page, int pageSize)
         {
             var repo = _unitOfWork.Repository<Appointment>();
+            var doctorRepo = _unitOfWork.Repository<Doctor>();
+            var patientRepo = _unitOfWork.Repository<Patient>();
 
+
+            var doctor = await doctorRepo.GetByIdAsync(doctorId);
+            if (doctor == null)
+                throw new NotFoundException("Doctor not found.");
+            
             var appointments = (await repo.GetAllAsync())
                 .Where(a => a.DoctorId == doctorId)
                 .OrderByDescending(a => a.AppointmentDate)
@@ -54,20 +61,31 @@ namespace MedicalAppointmentApi.Services
                 .Take(pageSize)
                 .ToList();
 
-            return appointments.Select(a => new AppointmentDTO
+
+            return appointments.Select(a =>
             {
-                Id = a.Id,
-                AppointmentDate = a.AppointmentDate,
-                Reason = a.Reason,
-                Status = a.Status.ToString(),
-                DoctorName = a.Doctor != null ?  $"{a.Doctor.FirstName} {a.Doctor.LastName}" : null, 
-                PatientName = a.Patient != null ?  $"{a.Patient.FirstName} {a.Patient.LastName}" : null
+                var patient = patientRepo.GetByIdAsync(a.PatientId!).Result;
+                return new AppointmentDTO
+                {
+                    Id = a.Id,
+                    AppointmentDate = a.AppointmentDate,
+                    Reason = a.Reason,
+                    Status = a.Status.ToString(),
+                    DoctorName = doctor != null ? $"{doctor.FirstName} {doctor.LastName}" : null,
+                    PatientName = patient != null ? $"{patient.FirstName} {patient.LastName}" : null
+                };
             });
         }
 
         public async Task<IEnumerable<AppointmentDTO>> GetPatientAppointmentsAsync(int patientId, int page, int pageSize)
         {
             var repo = _unitOfWork.Repository<Appointment>();
+            var patientRepo = _unitOfWork.Repository<Patient>();
+            var doctorRepo = _unitOfWork.Repository<Doctor>();
+
+            var patient = await patientRepo.GetByIdAsync(patientId);
+            if (patient == null)
+                throw new NotFoundException("Patient not found.");
 
             var appointments = (await repo.GetAllAsync())
                 .Where(a => a.PatientId == patientId)
@@ -79,14 +97,18 @@ namespace MedicalAppointmentApi.Services
             if (appointments == null || !appointments.Any())
                 throw new NotFoundException("No appointments found for this patient.");
 
-            return appointments.Select(a => new AppointmentDTO
+            return appointments.Select(a =>
             {
-                Id = a.Id,
-                AppointmentDate = a.AppointmentDate,
-                Reason = a.Reason,
-                Status = a.Status.ToString(),
-                DoctorName = a.Doctor != null ? $"{a.Doctor.FirstName} {a.Doctor.LastName}" : null,
-                PatientName = a.Patient != null ? $"{a.Patient.FirstName} {a.Patient.LastName}" : null
+                var doctor = doctorRepo.GetByIdAsync(a.DoctorId).Result;
+                return new AppointmentDTO
+                {
+                    Id = a.Id,
+                    AppointmentDate = a.AppointmentDate,
+                    Reason = a.Reason,
+                    Status = a.Status.ToString(),
+                    DoctorName = doctor != null ? $"{doctor.FirstName} {doctor.LastName}" : null,
+                    PatientName = $"{patient.FirstName} {patient.LastName}"
+                };
             });
         }
 
@@ -120,5 +142,30 @@ namespace MedicalAppointmentApi.Services
 
             return true;
         }
+
+        public async Task<AppointmentDTO> GetAppointmentByIdAsync(int appointmentId, int userId, string role)
+        {
+            var repo = _unitOfWork.Repository<Appointment>();
+            var appointment = await repo.GetByIdAsync(appointmentId);
+
+            if (appointment == null)
+                throw new NotFoundException("Appointment not found.");
+
+            if (role == Role.Patient.ToString() && appointment.PatientId != userId)
+                throw new ForbiddenAccessException("Cannot access another patient's appointment.");
+
+            if (role == Role.Doctor.ToString() && appointment.DoctorId != userId)
+                throw new ForbiddenAccessException("Cannot access another doctor's appointment.");
+
+            return new AppointmentDTO
+            {
+                Id = appointment.Id,
+                AppointmentDate = appointment.AppointmentDate,
+                Reason = appointment.Reason,
+                Status = appointment.Status.ToString(),
+                DoctorName = appointment.Doctor != null ? $"{appointment.Doctor.FirstName} {appointment.Doctor.LastName}" : null,
+                PatientName = appointment.Patient != null ? $"{appointment.Patient.FirstName} {appointment.Patient.LastName}" : null
+            };
+        }
     }
-}
+};

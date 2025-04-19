@@ -13,5 +13,6 @@ namespace MedicalAppointmentApi.Interfaces
         Task<IEnumerable<AppointmentDTO>> GetPatientAppointmentsAsync(int patientId, int page, int pageSize);
         Task<IEnumerable<AppointmentDTO>> GetDoctorAppointmentsAsync(int doctorId, int page, int pageSize);
         Task<bool> CancelAsync(int appointmentId, int userId, string role);
+        Task<AppointmentDTO> GetAppointmentByIdAsync(int appointmentId, int userId, string role);
     }
 }

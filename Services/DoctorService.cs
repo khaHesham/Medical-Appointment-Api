@@ -34,6 +34,7 @@ namespace MedicalAppointmentApi.Services
             doctorDto.LastName = doctor.LastName;
             doctorDto.PhoneNumber = doctor.PhoneNumber;
             doctorDto.Email = doctor.Email;
+            doctorDto.Specialization = doctor.Specialization;
             // return DTO
             return Task.FromResult(doctorDto);
         }
@@ -53,8 +54,10 @@ namespace MedicalAppointmentApi.Services
                 doctor.LastName = updateDoctorRequest.LastName;
             if (updateDoctorRequest.PhoneNumber != null)
                 doctor.PhoneNumber = updateDoctorRequest.PhoneNumber;
-            if(updateDoctorRequest.Specialization != null)
+            if (updateDoctorRequest.Specialization != null)
+            {
                 doctor.Specialization = updateDoctorRequest.Specialization;
+            }
 
             // save changes
             await _unitOfWork.CompleteAsync();
@@ -70,6 +73,29 @@ namespace MedicalAppointmentApi.Services
 
             return doctorDto;
         }
-        
+
+        public async Task<IEnumerable<DoctorDTO>> GetAllDoctorsAsync()
+        {
+            var doctorRepo = _unitOfWork.Repository<Doctor>();
+            var doctors = await doctorRepo.GetAllAsync();  // assuming size is not too large
+            if (doctors == null || !doctors.Any())
+            {
+                throw new NotFoundException("No doctors found.");
+            }
+
+            // convert to DTO
+            var doctorDtos = doctors.Select(d => new DoctorDTO
+            {
+                Id = d.Id,
+                FirstName = d.FirstName,
+                LastName = d.LastName,
+                PhoneNumber = d.PhoneNumber,
+                Email = d.Email,
+                Specialization = d.Specialization
+            });
+
+            return doctorDtos;
+        }
+
     }
 }

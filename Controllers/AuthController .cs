@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MedicalAppointmentApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("auth")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -36,26 +36,26 @@ namespace MedicalAppointmentApi.Controllers
         [HttpPost("register/patient")]
         public async Task<IActionResult> RegisterPatient([FromBody] RegisterRequest request)
         {
-            var role = Role.Patient; 
+            var role = Role.Patient;
             var result = await _authService.RegisterAsync(request, role);
             if (result == null)
             {
                 return BadRequest();
             }
-            return Ok(result);
+            return StatusCode(201, result);
         }
 
         [AllowAnonymous]
         [HttpPost("register/doctor")]
         public async Task<IActionResult> RegisterDoctor([FromBody] RegisterRequest request)
         {
-            var role = Role.Doctor; 
+            var role = Role.Doctor;
             var result = await _authService.RegisterAsync(request, role);
             if (result == null)
             {
                 return BadRequest();
             }
-            return Ok(result);
+            return StatusCode(201, result);
         }
     }
 

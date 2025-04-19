@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MedicalAppointmentApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("patients")]
     [ApiController]
     public class PatientController : ControllerBase
     {
@@ -48,16 +48,16 @@ namespace MedicalAppointmentApi.Controllers
             return Ok(result);
         }
 
-        [HttpPost("appointments")]
+        [HttpPost("appointments/schedule")]
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> ScheduleAppointment([FromBody] ScheduleAppointmentRequest request)
         {
             var patientId = User.GetUserId();
             var result = await _appointmentService.ScheduleAsync(patientId, request);
-            return Ok(result);
+            return StatusCode(201, result);
         }
 
-        [HttpGet("appointments")]
+        [HttpGet("appointments/all")]
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> GetMyAppointments([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
