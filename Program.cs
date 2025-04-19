@@ -51,7 +51,6 @@ builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddHostedService<AppointmentReminderService>();
 
 
-
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
@@ -123,6 +122,10 @@ using (var scope = app.Services.CreateScope())
     // if the database does not exist, it will be created
     db.Database.Migrate();
 }
+
+// configure app port
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5172";
+app.Urls.Add($"http://0.0.0.0:{port}");
 
 
 // Middleware pipeline
